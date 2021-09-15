@@ -11,3 +11,7 @@
 # IntelliJ IDEA
 /.bsp/
 /.idea/
+*.iml
+
+# H2 database
+/data.*.db

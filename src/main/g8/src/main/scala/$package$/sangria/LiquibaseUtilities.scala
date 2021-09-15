@@ -21,7 +21,7 @@ object LiquibaseUtilities extends StrictLogging {
     val config = ConfigSource.default.at("sangria").loadOrThrow[SangriaConfig]
     val url = config.database.url
 
-    logger.info(s"Updating database schema at \${url}...")
+    logger.info(s"Updating database schema at \$url...")
     val connection = DriverManager.getConnection(url)
     try {
       val database = DatabaseFactory.getInstance.findCorrectDatabaseImplementation(new JdbcConnection(connection))

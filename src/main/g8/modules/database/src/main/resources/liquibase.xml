@@ -22,8 +22,9 @@
             <column name="name" type="varchar(200)" remarks="The user's name.">
                 <constraints nullable="false" checkConstraint="length(fullName) > 0" unique="true"/>
             </column>
-            <column name="person">
-                <constraints referencedTableName="person" referencedColumnNames="id"/>
+            <column name="person" type="long">
+                <constraints nullable="false" referencedTableName="person" referencedColumnNames="id"
+                             foreignKeyName="fk_user_person"/>
             </column>
         </createTable>
     </changeSet>

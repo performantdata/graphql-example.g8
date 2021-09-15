@@ -2,6 +2,16 @@ import sbt._
 
 /** Configuration for building the Sangria example code. */
 object SangriaExample {
+  /** Return the JDBC driver class name for the given database. */
+  def jdbcDriver(db: Database): String = db match {
+    case H2 => "org.h2.Driver"
+  }
+
+  /** Return the Slick profile class name for the given database. */
+  def slickProfile(db: Database): String = db match {
+    case H2 => "slick.jdbc.H2Profile"
+  }
+
   /** A Web API implementation. */
   sealed trait WebApi
 
@@ -15,8 +25,5 @@ object SangriaExample {
   case object H2 extends Database
 
   val webApi = settingKey[WebApi]("Implementation to use for the Web API.")
-  webApi := AkkaHttp
-
   val database = settingKey[Database]("Database vendor to use for persistence.")
-  database := H2
 }
