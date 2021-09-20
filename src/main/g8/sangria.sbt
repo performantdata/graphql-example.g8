@@ -28,8 +28,9 @@ ThisBuild / libraryDependencies ++= {
     "org.webjars.npm" % "react-dom" % reactVersion,
 
     // Slick
-    "com.typesafe.slick" %% "slick"         % slickVersion,
-    "com.typesafe.slick" %% "slick-codegen" % slickVersion,
+    "com.typesafe.slick" %% "slick"          % slickVersion,
+    "com.typesafe.slick" %% "slick-codegen"  % slickVersion,
+    "com.typesafe.slick" %% "slick-hikaricp" % slickVersion,
 
     // for code generation
     "info.picocli" % "picocli" % "4.6.1" % Provided,  //TODO only present to code gen scope

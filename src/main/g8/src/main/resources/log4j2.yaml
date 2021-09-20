@@ -4,7 +4,7 @@ Configuration:
   properties:
     property:
       name: filename
-      value: target/test-yaml.log
+      value: logs/server.log
   thresholdFilter:
     level: debug
   appenders:
@@ -12,28 +12,20 @@ Configuration:
       name: STDOUT
       target: SYSTEM_OUT
       PatternLayout:
-        Pattern: "%m%n"
+        Pattern: "%message%n"
     File:
       name: File
       fileName: \${filename}
       PatternLayout:
-        Pattern: "%d %p %C{1.} [%t] %m%n"
+        Pattern: "%date %level %logger{-2.} [%threadName] %message%n"
       Filters:
         ThresholdFilter:
-          level: error
+          level: debug
 
   Loggers:
-    logger:
-    - name: org.apache.logging.log4j.test1
-      level: debug
-      additivity: false
-      ThreadContextMapFilter:
-        KeyValuePair:
-          key: test
-          value: 123
-      AppenderRef:
-        ref: STDOUT
     Root:
-      level: info
+      level: debug
       AppenderRef:
         ref: STDOUT
+      AppenderRef:
+        ref: File

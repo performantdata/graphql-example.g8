@@ -1,6 +1,13 @@
 ThisBuild / organization := "$organization$"
 ThisBuild / scalaVersion := "2.13.6"
 ThisBuild / version := "0.1.0"
+ThisBuild / scalacOptions ++= Seq(
+  "-encoding", "UTF-8",
+  "-target:11",
+  "-deprecation",
+  "-feature",
+  "-unchecked",
+)
 
 lazy val root = (project in file("."))
   .settings(
@@ -17,7 +24,27 @@ SangriaExample.webApi := SangriaExample.AkkaHttp
 ThisBuild / SangriaExample.database := SangriaExample.H2
 
 // Docker image
-enablePlugins(JavaAppPackaging)
+
+import com.typesafe.sbt.packager.docker.{Cmd, ExecCmd}
+enablePlugins(JavaAppPackaging, DockerPlugin)
 dockerBaseImage    := "eclipse-temurin:16-focal"
 dockerUpdateLatest := true
 dockerExposedPorts := Seq(8080)
+
+// Create writable log and database directories.
+Docker / daemonUserUid := None
+Docker / daemonUser    := "daemon"
+dockerCommands ++= Seq(
+  Cmd("USER", "root"),
+  ExecCmd("RUN", "mkdir", "database", "logs"),
+  ExecCmd("RUN", "chown", "daemon.daemon", "database", "logs"),
+
+  // Update the OS.
+  ExecCmd("RUN", "apt-get", "-qq", "update"),
+  ExecCmd("RUN", "apt-get", "-qq", "upgrade"),
+
+  // Install some useful tools.
+  ExecCmd("RUN", "apt-get", "-qq", "install", "net-tools"),
+
+  Cmd("USER", "daemon"),
+)
