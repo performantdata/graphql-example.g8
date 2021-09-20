@@ -7,10 +7,12 @@ import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import com.performantdata.data.user.schema.{GraphqlSchema, SangriaContext}
 import org.webjars.WebJarAssetLocator
 import sangria.execution.deferred.DeferredResolver
 import sangria.execution.{ErrorWithResolver, Executor, QueryAnalysisError}
 import sangria.http.akka.Util.explicitlyAccepts
+import sangria.marshalling.circe._
 import sangria.slowlog.SlowLog
 
 import scala.util.{Failure, Success, Try}
@@ -49,11 +51,11 @@ object AkkaHttpApp extends CirceHttpSupport {
           prepareGraphQLRequest {
             case Success(req) =>
               val middleware = if (tracing.isDefined) SlowLog.apolloTracing :: Nil else Nil
-              val deferredResolver = DeferredResolver.fetchers(SchemaDefinition.characters)
+              val deferredResolver: DeferredResolver[Any] = DeferredResolver.empty
               val graphQLResponse = Executor.execute(
-                schema           = SchemaDefinition.StarWarsSchema,
+                schema           = GraphqlSchema.UserSchema,
                 queryAst         = req.query,
-                userContext      = new CharacterRepo,
+                userContext      = SangriaContext(),
                 variables        = req.variables,
                 operationName    = req.operationName,
                 middleware       = middleware,

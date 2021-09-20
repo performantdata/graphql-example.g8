@@ -1,0 +1,19 @@
+schema {
+  query: Query
+}
+
+"The root query type."
+type Query {
+  "Return the user with the given name."
+  username: User
+}
+
+type User {
+  id: Long!
+  name: String!
+}
+
+type Person {
+  id: Long!
+  fullName: String!
+}

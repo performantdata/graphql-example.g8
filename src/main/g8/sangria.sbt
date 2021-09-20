@@ -2,13 +2,16 @@
  *
  * It should not be necessary for users of this template project to modify this code.
  */
-libraryDependencies ++= {
+ThisBuild / libraryDependencies ++= {
   val jacksonVersion = "2.12.5"
   val log4jVersion   = "2.14.1"
   val reactVersion   = "17.0.2"
+  val slickVersion   = "3.3.3"
 
   Seq(
+    "com.github.pureconfig" %% "pureconfig" % "0.16.0",
     "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
+    "org.liquibase" % "liquibase-core" % "4.4.3",
 
     // Log4J2
     "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion,
@@ -23,30 +26,99 @@ libraryDependencies ++= {
     "org.webjars.npm" % "graphiql" % "1.3.2",
     "org.webjars.npm" % "react"     % reactVersion,
     "org.webjars.npm" % "react-dom" % reactVersion,
-  ) ++
-  {  // Web API
-    import SangriaExample._
 
-    webApi.value match {
-      case AkkaHttp =>
-        val akkaHttpVersion        = "$akka_http_version$"
-        val akkaVersion            = "$akka_version$"
-        val sangriaAkkaHttpVersion = "0.0.2"
+    // Slick
+    "com.typesafe.slick" %% "slick"         % slickVersion,
+    "com.typesafe.slick" %% "slick-codegen" % slickVersion,
 
-        Seq(
-          "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
-          "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-          "com.typesafe.akka" %% "akka-actor-typed"     % akkaVersion,
-          "com.typesafe.akka" %% "akka-stream"          % akkaVersion,
+    // for code generation
+    "info.picocli" % "picocli" % "4.6.1" % Provided,  //TODO only present to code gen scope
+  )
+}
 
-          "com.typesafe.akka" %% "akka-http-testkit"        % akkaHttpVersion % Test,
-          "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion     % Test,
+// database
 
-          "org.sangria-graphql" %% "sangria-akka-http-core"  % sangriaAkkaHttpVersion,
-          "org.sangria-graphql" %% "sangria-akka-http-circe" % sangriaAkkaHttpVersion,
-        )
-    }
+ThisBuild / libraryDependencies ++= {
+  import SangriaExample._
+
+  database.value match {
+    case H2 =>
+      Seq(
+        "com.h2database" % "h2" % "1.4.200",
+      )
   }
 }
 
-enablePlugins(JavaAppPackaging)
+// Web API
+
+ThisBuild / libraryDependencies ++= {
+  import SangriaExample._
+
+  webApi.value match {
+    case AkkaHttp =>
+      val akkaHttpVersion        = "$akka_http_version$"
+      val akkaVersion            = "$akka_version$"
+      val sangriaAkkaHttpVersion = "0.0.2"
+
+      Seq(
+        "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
+        "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+        "com.typesafe.akka" %% "akka-actor-typed"     % akkaVersion,
+        "com.typesafe.akka" %% "akka-stream"          % akkaVersion,
+
+        "com.typesafe.akka" %% "akka-http-testkit"        % akkaHttpVersion % Test,
+        "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion     % Test,
+
+        "org.sangria-graphql" %% "sangria-akka-http-core"  % sangriaAkkaHttpVersion,
+        "org.sangria-graphql" %% "sangria-akka-http-circe" % sangriaAkkaHttpVersion,
+      )
+  }
+}
+
+// Slick code generation
+
+Compile / sourceGenerators += domainClassGeneration.taskValue
+
+lazy val domainClassGeneration = taskKey[Seq[File]]("Generate the domain classes from the database schema")
+domainClassGeneration := {
+  import SangriaExample._
+  import pureconfig._
+  import pureconfig.generic.auto._
+
+  case class SangriaConfig(database: Database)
+  case class Database(url: String, user: Option[String], password: Option[String])
+
+  val logger      = streams.value.log
+  val baseDir     = (ThisBuild / baseDirectory).value.toPath
+  val resourceDir = (Compile / resourceDirectory).value
+
+  // Read the database URI from the configuration.
+  val config = ConfigSource.file(resourceDir / "application.conf").at("sangria").loadOrThrow[SangriaConfig]
+  val url = config.database.url
+
+  // Run Liquibase
+
+  val classpath = (Compile / dependencyClasspath).value.files
+  val changelog = baseDir.relativize((resourceDir / "liquibase.xml").toPath).toString
+
+  runner.value.run("liquibase.integration.commandline.LiquibaseCommandLine",
+    classpath, Seq("update", s"--changelog-file=\$changelog", s"--url=\$url"), logger
+  ).recover {
+    case t: Throwable => sys.error(t.getMessage)
+  }
+
+  // Run Slick
+
+  val profile   = slickProfile(database.value)
+  val driver    = jdbcDriver(database.value)
+  val outputDir = (Compile / sourceManaged).value / "slick"
+  val pkg       = "$package$.domain"
+
+  runner.value.run("slick.codegen.SourceCodeGenerator",
+    classpath, Seq(profile, driver, url, outputDir.getPath, pkg), logger
+  ).recover {
+    case t: Throwable => sys.error(t.getMessage)
+  }
+
+  Seq(outputDir / pkg.replace('.', '/') / "Tables.scala")
+}

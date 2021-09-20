@@ -31,7 +31,7 @@ Besides Sangria, the technologies used to implement the service include:
 
 - [Liquibase][liquibase], for database schema generation and versioning.
   (This only works for JDBC-compatible databases.)
-  There is [a change set file](modules/database/src/main/resources/liquibase.xml) that can be modified by the user.
+  There is [a change set file](src/main/resources/liquibase.xml) that can be modified by the user.
 
 - [PureConfig][pureconfig], for software configuration.
 - [Scala Logging][scala-logging], for logging API.
