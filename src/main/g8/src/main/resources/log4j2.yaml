@@ -1,10 +1,6 @@
 Configuration:
   status: warn
   name: $name;format="normalize"$
-  properties:
-    property:
-      name: filename
-      value: logs/server.log
   thresholdFilter:
     level: debug
   appenders:
@@ -13,19 +9,34 @@ Configuration:
       target: SYSTEM_OUT
       PatternLayout:
         Pattern: "%message%n"
-    File:
-      name: File
-      fileName: \${filename}
-      PatternLayout:
-        Pattern: "%date %level %logger{-2.} [%threadName] %message%n"
+
+    RollingFile:
+      name: RollingFile
+      fileName: logs/server.log
+      filePattern: logs/server.%d{yyyy-MM-dd}.%i.log.xz
       Filters:
         ThresholdFilter:
           level: debug
+      PatternLayout:
+        Pattern: "%date{ISO8601}{GMT} %level %logger [%threadName] %message%n"
+        # We must wait for Log4J 2.15.0 on Maven Central to use %date{yyyy-MM-dd'T'HH:mm:ss.nnnnnnX}
+        # https://issues.apache.org/jira/browse/LOG4J2-2885
+      Policies:
+        OnStartupTriggeringPolicy: {}
+        TimeBasedTriggeringPolicy: {}
+        SizeBasedTriggeringPolicy:
+          size: 250MB
+      DefaultRolloverStrategy:
+        max: 20
 
   Loggers:
+    logger:
+      - name: com.zaxxer.hikari.pool.HikariPool
+        level: info
+
     Root:
       level: debug
       AppenderRef:
         ref: STDOUT
       AppenderRef:
-        ref: File
+        ref: RollingFile

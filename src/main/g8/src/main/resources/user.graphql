@@ -8,11 +8,20 @@ type Query {
   username: User
 }
 
+"""
+A user in the system.
+
+A user represents a credentialed principal in the system's authentication domain.
+"""
 type User {
   id: Long!
   name: String!
+
+  "The person responsible for this user's credentials."
+  person: Person!
 }
 
+"A person in the system."
 type Person {
   id: Long!
   fullName: String!

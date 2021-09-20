@@ -13,7 +13,9 @@ ThisBuild / libraryDependencies ++= {
     "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
     "org.liquibase" % "liquibase-core" % "4.4.3",
 
-    // Log4J2
+    // logging
+    "org.apache.commons" % "commons-compress" % "1.21",
+    "org.tukaani" % "xz" % "1.9",
     "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion,
     "org.apache.logging.log4j" % "log4j-api"        % log4jVersion,
     "org.apache.logging.log4j" % "log4j-core"       % log4jVersion,
