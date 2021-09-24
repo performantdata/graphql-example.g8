@@ -4,6 +4,7 @@
 *.class
 
 # sbt
+/codegen/target/
 /project/project/
 /project/target/
 /target/

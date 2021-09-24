@@ -49,6 +49,7 @@ There are also points of variance, where a particular technology can be selected
 Selection can be made in `build.sbt` using the available setting keys, e.g.:
 ```sbt
 import SangriaExample._
+database := H2
 webApi := AkkaHttp
 ```
 See the [`SangriaExample` class](project/SangriaExample.scala) for the available settings.
@@ -56,7 +57,7 @@ See the [`SangriaExample` class](project/SangriaExample.scala) for the available
 ## updating the project
 
 This project is generated from [a template][template].
-The code in [`sangria.sbt`](sangria.sbt) and [the `sangria` directory](src/main/scala/$package$/sangria)
+The code in [`sangria.sbt`](sangria.sbt) and [the `sangria` directory](src/main/scala/$package;format="package-dir"$/sangria)
 should not need to be changed by users of the template.
 If that's _not_ true, point that out to the maintainers.
 

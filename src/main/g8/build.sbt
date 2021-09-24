@@ -10,6 +10,7 @@ ThisBuild / scalacOptions ++= Seq(
 )
 
 lazy val root = (project in file("."))
+  .dependsOn(codegen)
   .settings(
     name := "$name;format="normalize"$",
     libraryDependencies ++= Seq(
@@ -18,6 +19,9 @@ lazy val root = (project in file("."))
       "org.scalatest" %% "scalatest" % "3.2.9" % Test,
     ),
   )
+
+/** Sangria example's code generation project. */
+lazy val codegen = project
 
 // Sangria example configuration
 SangriaExample.webApi := SangriaExample.AkkaHttp

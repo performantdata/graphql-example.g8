@@ -11,3 +11,7 @@
 # IntelliJ IDEA
 /.bsp/
 /.idea/
+
+# application-created
+/database/
+/logs/

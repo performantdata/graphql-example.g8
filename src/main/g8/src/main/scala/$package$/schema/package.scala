@@ -4,5 +4,7 @@ package com.performantdata.data.user
   *
   * These types describe, to Sangria, the GraphQL schema.
   * They utilize [[model underlying Scala types]].
+  *
+  * The schema description is broken up into related subsets of elements using mix-in traits.
   */
 package object schema {}

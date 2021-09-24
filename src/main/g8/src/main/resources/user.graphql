@@ -4,8 +4,8 @@ schema {
 
 "The root query type."
 type Query {
-  "Return the user with the given name."
-  username: User
+  "Return the user with the given name, if it exists."
+  username(name: String!): User  @getUserByName
 }
 
 """

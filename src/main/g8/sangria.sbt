@@ -96,8 +96,11 @@ domainClassGeneration := {
   val resourceDir = (Compile / resourceDirectory).value
 
   // Read the database URI from the configuration.
-  val config = ConfigSource.file(resourceDir / "application.conf").at("sangria").loadOrThrow[SangriaConfig]
-  val url = config.database.url
+  val config =
+    ConfigSource.file(resourceDir / "application.conf").at("sangria").loadOrThrow[SangriaConfig].database
+  val url      = config.url
+  val user     = config.user.getOrElse("")
+  val password = config.password.getOrElse("")
 
   // Run Liquibase
 
@@ -116,12 +119,13 @@ domainClassGeneration := {
   val driver    = jdbcDriver(database.value)
   val outputDir = (Compile / sourceManaged).value / "slick"
   val pkg       = "$package$.domain"
+  val className = "SangriaExampleCodeGenerator"
 
   runner.value.run("slick.codegen.SourceCodeGenerator",
-    classpath, Seq(profile, driver, url, outputDir.getPath, pkg), logger
+    classpath, Seq(profile, driver, url, outputDir.getPath, pkg, user, password, "true", className, "true"), logger
   ).recover {
     case t: Throwable => sys.error(t.getMessage)
   }
 
-  Seq(outputDir / pkg.replace('.', '/') / "Tables.scala")
+  ((outputDir / pkg.replace('.', '/')) ** "*.scala").get()
 }
