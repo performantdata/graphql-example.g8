@@ -1,7 +1,12 @@
 package $package$.sangria
 
-/** Configuration for the Sangria example code. */
-case class SangriaConfig(database: Database)
+/** Configuration for the Sangria example code.
+  *
+  * @param databaseDirectory Absolute path of the directory in which test database(s) will be stored.
+  */
+case class SangriaConfig(databaseDirectory: Option[String], database: Database)
+
+case class Database(db: DatabaseParameters)
 
 /** Configuration for the Sangria database.
   *
@@ -10,4 +15,4 @@ case class SangriaConfig(database: Database)
   * @param user     database username credential
   * @param password database password credential
   */
-case class Database(url: String, driver: String, user: Option[String], password: Option[String])
+case class DatabaseParameters(url: String, driver: String, user: Option[String], password: Option[String])

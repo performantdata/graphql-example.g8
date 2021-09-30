@@ -1,4 +1,4 @@
-# User data service
+# $name$
 
 This project creates a [Sangria][sangria]-based service that provides access to a user database,
 of the type that one might find in a social network.

@@ -1,4 +1,4 @@
-package com.performantdata.data.user.schema
+package $package$.schema
 
 import sangria.schema.{Directive, DirectiveLocation}
 
@@ -16,4 +16,8 @@ import sangria.schema.{Directive, DirectiveLocation}
 trait UserSchemaDirectives {
   protected val getUserByNameDirective: Directive =
     Directive("getUserByName", locations = Set(DirectiveLocation.FieldDefinition))
+  protected val createPersonDirective: Directive =
+    Directive("createPerson", locations = Set(DirectiveLocation.FieldDefinition))
+  protected val createUserDirective: Directive =
+    Directive("createUser", locations = Set(DirectiveLocation.FieldDefinition))
 }

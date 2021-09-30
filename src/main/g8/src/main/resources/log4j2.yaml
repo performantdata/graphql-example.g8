@@ -33,6 +33,12 @@ Configuration:
     logger:
       - name: com.zaxxer.hikari.pool.HikariPool
         level: info
+      - name: slick.basic
+        level: info
+      - name: slick.compiler
+        level: info
+      - name: slick.compiler.QueryCompilerBenchmark
+        level: debug
 
     Root:
       level: debug

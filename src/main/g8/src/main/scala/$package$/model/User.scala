@@ -1,3 +1,5 @@
-package com.performantdata.data.user.model
+package $package$.model
 
-case class User(id: ID, name: String)
+import $package$.domain.UserId
+
+case class User(id: UserId, name: String)

@@ -1,4 +1,4 @@
-package com.performantdata.data.user
+package $package$
 
 /** Types for modelling this service's GraphQL API.
   *

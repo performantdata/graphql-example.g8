@@ -15,9 +15,10 @@ lazy val root = (project in file("."))
     name := "$name;format="normalize"$",
     libraryDependencies ++= Seq(
       "com.github.pathikrit" %% "better-files" % "3.9.1",
-
       "org.scalatest" %% "scalatest" % "3.2.9" % Test,
     ),
+    Test / javaOptions += "-Dconfig.resource=application-test.conf",
+    Test / fork := true,
   )
 
 /** Sangria example's code generation project. */
@@ -44,11 +45,11 @@ dockerCommands ++= Seq(
   ExecCmd("RUN", "chown", "daemon.daemon", "database", "logs"),
 
   // Update the OS.
-  ExecCmd("RUN", "apt-get", "-qq", "update"),
-  ExecCmd("RUN", "apt-get", "-qq", "upgrade"),
+//  ExecCmd("RUN", "apt-get", "-qq", "update"),
+//  ExecCmd("RUN", "apt-get", "-qq", "upgrade"),
 
   // Install some useful tools.
-  ExecCmd("RUN", "apt-get", "-qq", "install", "net-tools"),
+//  ExecCmd("RUN", "apt-get", "-qq", "install", "net-tools"),
 
   Cmd("USER", "daemon"),
 )

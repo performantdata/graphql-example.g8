@@ -1,12 +1,25 @@
 schema {
   query: Query
+  mutation: Mutation
 }
 
-"The root query type."
+"The root query type, container for all query operations."
 type Query {
   "Return the user with the given name, if it exists."
   username(name: String!): User  @getUserByName
 }
+
+"The root mutation type, container for all mutation operations."
+type Mutation {
+  "Create a user having the given name."
+  createUser(name: String!, person: PersonId): UserId!  @createUser
+
+  "Create a person having the given full name."
+  createPerson(fullName: String!): PersonId!  @createPerson
+}
+
+"A unique identifier for a user in the system."
+scalar UserId
 
 """
 A user in the system.
@@ -14,15 +27,18 @@ A user in the system.
 A user represents a credentialed principal in the system's authentication domain.
 """
 type User {
-  id: Long!
+  id: UserId!
   name: String!
 
   "The person responsible for this user's credentials."
   person: Person!
 }
 
+"A unique identifier for a person in the system."
+scalar PersonId
+
 "A person in the system."
 type Person {
-  id: Long!
+  id: PersonId!
   fullName: String!
 }

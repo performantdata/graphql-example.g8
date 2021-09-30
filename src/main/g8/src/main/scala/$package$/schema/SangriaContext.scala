@@ -1,4 +1,4 @@
-package com.performantdata.data.user.schema
+package $package$.schema
 
 import scala.concurrent.ExecutionContext
 
@@ -14,4 +14,6 @@ import scala.concurrent.ExecutionContext
   */
 case class SangriaContext()(implicit ec: ExecutionContext) {
   val dao: DAO = DAO()
+
+  override def toString: String = s"\${getClass.getSimpleName}(\$dao)"
 }

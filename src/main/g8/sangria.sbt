@@ -12,6 +12,7 @@ ThisBuild / libraryDependencies ++= {
     "com.github.pureconfig" %% "pureconfig" % "0.16.0",
     "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
     "org.liquibase" % "liquibase-core" % "4.4.3",
+    "org.sangria-graphql" %% "sangria" % "2.1.3",
 
     // logging
     "org.apache.commons" % "commons-compress" % "1.21",
@@ -89,7 +90,8 @@ domainClassGeneration := {
   import pureconfig.generic.auto._
 
   case class SangriaConfig(database: Database)
-  case class Database(url: String, user: Option[String], password: Option[String])
+  case class Database(db: DatabaseParameters)
+  case class DatabaseParameters(url: String, user: Option[String], password: Option[String])
 
   val logger      = streams.value.log
   val baseDir     = (ThisBuild / baseDirectory).value.toPath
@@ -97,7 +99,7 @@ domainClassGeneration := {
 
   // Read the database URI from the configuration.
   val config =
-    ConfigSource.file(resourceDir / "application.conf").at("sangria").loadOrThrow[SangriaConfig].database
+    ConfigSource.file(resourceDir / "application.conf").at("sangria").loadOrThrow[SangriaConfig].database.db
   val url      = config.url
   val user     = config.user.getOrElse("")
   val password = config.password.getOrElse("")
