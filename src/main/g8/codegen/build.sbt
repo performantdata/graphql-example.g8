@@ -1,11 +1,9 @@
 libraryDependencies ++= {
-  val slickVersion = "3.3.3"
-
   Seq(
-    "com.github.pureconfig" %% "pureconfig" % "0.16.0",
-    "com.typesafe.slick" %% "slick-codegen" % slickVersion,
+    "com.github.pureconfig" %% "pureconfig" % Versions.pureconfig,
+    "com.typesafe.slick" %% "slick-codegen" % Versions.slick,
 
     // supported databases
-    "com.h2database" % "h2" % "1.4.200",
+    "com.h2database" % "h2" % Versions.h2,
   )
 }

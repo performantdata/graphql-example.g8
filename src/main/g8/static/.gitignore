@@ -1,0 +1,8 @@
+# sbt-style output directory
+/target/
+
+# npm
+/node_modules/
+
+# @11ty/eleventy-plugin-vite
+/.11ty-vite/

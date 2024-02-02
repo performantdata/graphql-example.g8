@@ -1,9 +1,9 @@
-# [Sangria][sangria] example template
+# [GraphQL][GraphQL] service example template
 
-This is a [Giter8][g8] template to assist prospective Sangria users in quickly setting up a service.
+This is a [Giter8][g8] template to assist prospective GraphQL users in quickly setting up a service.
 It comes with all the features that one would expect in a production project.
 See [the generated project's documentation](src/main/g8/README.md) for details.
-- a meaningful example domain model
+- a basic example domain model
 - Web interfacing code for popular Scala libraries
 - database interfacing code for popular Scala libraries and databases
 - authentication and authorization
@@ -17,24 +17,21 @@ The initial setup creates a project that uses
 ## setup
 
 Prerequisites:
-- JDK 8
+- JDK 17
 - sbt 1.3.x or higher
 
 To create your own project, open a console and run the following command to apply this template:
  ```
-sbt new performantdata/sangria-example.g8
+sbt new performantdata/graphql-example.g8
  ```
 
-This template will prompt for the following parameters. Press `Enter` if the default values suit you:
+This template will prompt for the following parameters. Press `Enter` if the default value suits you:
 - `name`: Becomes the name of the project.
-- `scala_version`: Specifies the Scala version for this project.
-- `akka_http_version`: Specifies which version of Akka HTTP should be used for this project. Must be at least 10.2.0.
-- `akka_version`: Specifies which version of Akka should be used for this project. Must be at least 2.6.0.
 - `organization`: Specifies the organization for this project.
 
 [akka-http]: https://doc.akka.io/docs/akka-http/current/index.html
 [circe]: https://circe.github.io/circe/
 [g8]: http://www.foundweekends.org/giter8/
+[GraphQL]: https://graphql.org/
 [h2]: https://h2database.com/
-[sangria]: https://sangria-graphql.github.io/
 [slick]: https://scala-slick.org/

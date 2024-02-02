@@ -1,16 +1,29 @@
+import com.typesafe.sbt.packager.docker.DockerChmodType
+
+import java.time.Instant
+
 ThisBuild / organization := "$organization$"
+ThisBuild / versionScheme := Some("semver-spec")
+
 ThisBuild / scalaVersion := "2.13.6"
-ThisBuild / version := "0.1.0"
 ThisBuild / scalacOptions ++= Seq(
   "-encoding", "UTF-8",
-  "-target:11",
+  "-target:17",
   "-deprecation",
   "-feature",
   "-unchecked",
 )
 
+/** Static Web files subproject. */
+lazy val `static` = (project in file("static"))
+  .settings(
+    name := "$name;format="normalize"$-static",
+    description := "Static Web files for the \"$name$\" system.",
+  )
+
 lazy val root = (project in file("."))
   .dependsOn(codegen)
+  .enablePlugins(GitVersioning, JavaAppPackaging, DockerPlugin)
   .settings(
     name := "$name;format="normalize"$",
     libraryDependencies ++= Seq(
@@ -19,37 +32,29 @@ lazy val root = (project in file("."))
     ),
     Test / javaOptions += "-Dconfig.resource=application-test.conf",
     Test / fork := true,
+
+    // sbt-native-packager settings
+
+    makeBatScripts := Seq.empty,
+    dockerBaseImage := "debian:12.4-slim",
+    dockerLabels ++= Map(
+      "org.opencontainers.image.created"       -> Instant.now.toString,
+      "org.opencontainers.image.version"       -> version.value,
+      "org.opencontainers.image.revision"      -> git.gitHeadCommit.value.getOrElse(""),
+      "org.opencontainers.image.vendor"        -> organizationName.value,
+      "org.opencontainers.image.description"   -> description.value.replace(""""""", """\\""""),
+      "org.opencontainers.image.base.name"     -> dockerBaseImage.value,
+    ),
+    dockerEnvVars ++= Map("LANG" -> "C.UTF-8"),
+    dockerExposedPorts := Seq(8080),
+    dockerUpdateLatest := true,
+    // We need a writable, searchable directory for log files.
+    dockerAdditionalPermissions +=
+      (DockerChmodType.UserGroupWriteExecute, (Docker / defaultLinuxInstallLocation).value + "/logs"),
   )
 
 /** Sangria example's code generation project. */
 lazy val codegen = project
 
 // Sangria example configuration
-SangriaExample.webApi := SangriaExample.AkkaHttp
 ThisBuild / SangriaExample.database := SangriaExample.H2
-
-// Docker image
-
-import com.typesafe.sbt.packager.docker.{Cmd, ExecCmd}
-enablePlugins(JavaAppPackaging, DockerPlugin)
-dockerBaseImage    := "eclipse-temurin:16-focal"
-dockerUpdateLatest := true
-dockerExposedPorts := Seq(8080)
-
-// Create writable log and database directories.
-Docker / daemonUserUid := None
-Docker / daemonUser    := "daemon"
-dockerCommands ++= Seq(
-  Cmd("USER", "root"),
-  ExecCmd("RUN", "mkdir", "database", "logs"),
-  ExecCmd("RUN", "chown", "daemon.daemon", "database", "logs"),
-
-  // Update the OS.
-//  ExecCmd("RUN", "apt-get", "-qq", "update"),
-//  ExecCmd("RUN", "apt-get", "-qq", "upgrade"),
-
-  // Install some useful tools.
-//  ExecCmd("RUN", "apt-get", "-qq", "install", "net-tools"),
-
-  Cmd("USER", "daemon"),
-)

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8" />
+  {# See https://www.w3.org/TR/css-viewport-1/ -#}
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/css/overview.css" />
+  <meta name="theme-color" content="#fafafa" />
+  <meta name="generator" content="{{ eleventy.generator }}" />
+  {{ headContent | safe | indent(2) -}}
+</head>
+<body>
+{{ content | safe -}}
+</body>
+</html>

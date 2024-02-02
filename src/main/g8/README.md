@@ -1,7 +1,7 @@
 # $name$
 
-This project creates a [Sangria][sangria]-based service that provides access to a user database,
-of the type that one might find in a social network.
+This project creates a [GraphQL][GraphQL]-based service that provides access to a user database,
+of the type that one might find as the basis of any authorization subsystem.
 
 ## running the service
 ### local Docker
@@ -14,7 +14,7 @@ The server listens on port 8080. Deploy it in the usual way:
 ```shell
 docker run -p 8080:8080 $name;format="normalize"$
 ```
-Using the above port number, http://localhost:8080/graphql should return the GraphiQL UI when viewed from a browser.
+Using the above port number, http://localhost:8080/graphiql should return the GraphiQL UI when viewed from a browser.
 
 ## documentation
 
@@ -25,9 +25,17 @@ sbt doc
 
 ## implementation
 
-Besides Sangria, the technologies used to implement the service include:
+Besides GraphQL, the technologies used to implement the service include:
 
-- [GraphiQL][graphiql], a Web-based UI for testing.
+- [Scala][Scala], a mixed-paradigm, object-oriented and functional programming language
+  with an expressive type syntax and compile-time type checking
+
+A collection of Scala libraries that use functional programming with effects:
+- [Caliban][Caliban], for implementing a GraphQL server and client
+- [http4s][http4s], for implementing HTTP server interfaces
+
+
+- [GraphiQL][graphiql], a Web-based UI for testing
 
 - [Liquibase][liquibase], for database schema generation and versioning.
   (This only works for JDBC-compatible databases.)
@@ -40,9 +48,6 @@ Besides Sangria, the technologies used to implement the service include:
 
 There are also points of variance, where a particular technology can be selected from those available:
 
-- The Web interface may be provided by one of:
-  - Akka HTTP
-
 - The database may be one of:
   - [H2][h2]
 
@@ -50,14 +55,13 @@ Selection can be made in `build.sbt` using the available setting keys, e.g.:
 ```sbt
 import SangriaExample._
 database := H2
-webApi := AkkaHttp
 ```
 See the [`SangriaExample` class](project/SangriaExample.scala) for the available settings.
 
 ## updating the project
 
 This project is generated from [a template][template].
-The code in [`sangria.sbt`](sangria.sbt) and [the `sangria` directory](src/main/scala/$package;format="package-dir"$/sangria)
+The code in [`template.sbt`](template.sbt) and [the `sangria` directory](src/main/scala/$package;format="package-dir"$/sangria)
 should not need to be changed by users of the template.
 If that's _not_ true, point that out to the maintainers.
 
@@ -66,13 +70,16 @@ that's been given the same parameter values.
 (This isn't a guarantee, but it is a secondary goal of the template project.)
 
 
+[Caliban]: https://ghostdogpr.github.io/caliban/
 [gitter]: https://gitter.im/sangria-graphql/sangria
 [graphiql]: https://github.com/graphql/graphiql#readme
+[GraphQL]: https://graphql.org/
 [h2]: https://h2database.com/
+[http4s]: https://http4s.org/
 [liquibase]: https://www.liquibase.org/
 [log4j2]: https://logging.apache.org/log4j/2.x/
 [pureconfig]: https://pureconfig.github.io/
-[sangria]: https://sangria-graphql.github.io/
 [sbt-native-packager]: https://www.scala-sbt.org/sbt-native-packager/
+[Scala]: https://www.scala-lang.org/
 [scala-logging]: https://github.com/lightbend/scala-logging
-[template]: https://github.com/performantdata/sangria-example.g8
+[template]: https://github.com/performantdata/graphql-example.g8

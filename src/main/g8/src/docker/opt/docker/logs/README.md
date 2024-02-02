@@ -1,0 +1,1 @@
+Directory for log files in the Docker image

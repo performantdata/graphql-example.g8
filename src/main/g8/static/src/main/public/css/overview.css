@@ -1,0 +1,52 @@
+/* Brand theming. */
+:root {
+    --button-focus-hue-sat: 65deg 70%;  /* Hue and saturation for button focus or hover. */
+    --button-focus-color:  hsl(var(--button-focus-hue-sat) 85%);  /* Color for button focus or hover. */
+    --button-active-color: hsl(var(--button-focus-hue-sat) 60%);  /* Color for an active button. */
+}
+
+body {
+    font-family: sans;
+}
+header, nav {
+    display: flex;
+    justify-content: center;
+}
+hgroup {
+    display: inline grid;
+    grid-template-columns:
+}
+h1 {
+    text-align: center;
+}
+hgroup p {
+    contain: inline-size;  /* Limit the width to that of the title. */
+    margin-top: 0;  /* Margins don't collapse between flex items. */
+}
+
+/* The navigation buttons. */
+ul {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+li {
+    display: block;
+    text-align: center;
+}
+li > a {
+    display: block;
+    border: 1px hsl(0deg 0% 75%) solid;
+    border-radius: 0.5ex;
+    padding: 1ex;
+    margin: 0.5ex;
+    font-size: 150%;
+    text-decoration: none;
+    color: black;
+}
+li > a:hover, li > a:focus {
+    background-color: var(--button-focus-color);
+}
+li > a:active {
+    background-color: var(--button-active-color);
+}
